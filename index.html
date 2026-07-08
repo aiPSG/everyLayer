@@ -107,9 +107,10 @@
   .layer{
     position:absolute; top:0; height:100%;
     border:0; padding:0; cursor:pointer; background:none;
-    transform-origin:left center;               /* left edge (x position) is the fixed anchor */
+    transform-origin:left center;
     transition:transform .6s cubic-bezier(.5,.05,.2,1),
-               width .6s cubic-bezier(.5,.05,.2,1);
+               width .6s cubic-bezier(.5,.05,.2,1),
+               left .6s cubic-bezier(.5,.05,.2,1);
   }
   .layer img{
     width:100%; height:100%; object-fit:cover; display:block;
@@ -180,10 +181,10 @@
       stat:"U 0.6", statLabel:"Whole-window thermal value" }
   ];
 
-  const fan  = document.getElementById('fan');
-  let active = 0;
+  const fan   = document.getElementById('fan');
+  const panels = [];
 
-  /* build the clickable panels once */
+  /* build the clickable panels once — one panel per layer, image never changes */
   LAYERS.forEach((L,i)=>{
     const btn = document.createElement('button');
     btn.className = 'layer';
@@ -192,39 +193,46 @@
     btn.innerHTML = '<img src="'+L.img+'" alt="'+L.name+'">';
     btn.addEventListener('click', ()=> select(i));
     fan.appendChild(btn);
+    panels.push(btn);
   });
 
   /* fan geometry ---------------------------------------------------------
-     Matches the reference comp: the selected image is a WIDE, near-frontal
-     panel; the rest are narrow angled slivers fanning to its right.
-     Every panel's LEFT EDGE (its x position) is FIXED — selecting only changes
-     that panel's WIDTH and rotation, never its horizontal position. */
-  const SLOTS    = [0, 56.5, 69.5, 82.5]; // % — fixed left-edge x of each panel (matches the comp)
-  const SEL_W    = 57;   // % — width of the selected (wide) panel
-  const SLIVER_W = 24;   // % — width of an un-selected panel before its rotation compresses it
-  const SEL_ROT  =  7;   // deg — selected panel: near-frontal, tipped the OPPOSITE way to the slivers
-  const REST_ROT = -58;  // deg — un-selected slivers: angled edge-on
+     There is a fixed row of SLOTS. Slot 0 is the WIDE, near-frontal "hero"
+     on the left; slots 1..n are the narrow angled slivers to its right.
+     Slot positions never move. Clicking a sliver SWAPS its layer with the
+     hero layer, so the clicked image travels into the wide slot and the
+     previous hero drops back into the vacated sliver spot. */
+  const SLOTS    = [0, 56.5, 69.5, 82.5]; // % — fixed left-edge x of each slot (matches the comp)
+  const SEL_W    = 57;   // % — width of the hero (wide) slot
+  const SLIVER_W = 24;   // % — width of a sliver slot before its rotation compresses it
+  const SEL_ROT  =  7;   // deg — hero: near-frontal, tipped the OPPOSITE way to the slivers
+  const REST_ROT = -58;  // deg — slivers: angled edge-on
+
+  // layerInSlot[s] = index of the layer currently occupying slot s
+  let layerInSlot = LAYERS.map((_,i)=>i);
+
+  function slotOfLayer(i){ return layerInSlot.indexOf(i); }
 
   function layout(){
-    const panels = fan.querySelectorAll('.layer');
-    panels.forEach((p,i)=>{
-      p.style.left = SLOTS[i] + '%';                 // FIXED x — never depends on selection
-      if(i === active){
+    layerInSlot.forEach((layerIdx, slot)=>{
+      const p = panels[layerIdx];
+      p.style.left = SLOTS[slot] + '%';              // slot position — fixed, never moves
+      if(slot === 0){
         p.classList.add('is-active');
         p.style.width     = SEL_W + '%';
         p.style.transform = 'rotateY(' + SEL_ROT + 'deg)';
-        p.style.zIndex    = 100;                      // wide panel sits in front
+        p.style.zIndex    = 100;                      // hero sits in front
       } else {
         p.classList.remove('is-active');
         p.style.width     = SLIVER_W + '%';
         p.style.transform = 'rotateY(' + REST_ROT + 'deg)';
-        p.style.zIndex    = 10 + i;
+        p.style.zIndex    = 10 + slot;
       }
     });
   }
 
   function paint(){
-    const L = LAYERS[active];
+    const L = LAYERS[layerInSlot[0]];                // hero layer drives the content pane
     document.getElementById('c-head').textContent      = L.head;
     document.getElementById('c-body').textContent      = L.body;
     document.getElementById('c-stat').textContent      = L.stat;
@@ -232,12 +240,17 @@
   }
 
   function select(i){
-    active = i;
+    const s = slotOfLayer(i);
+    if(s === 0) return;                              // already the hero
+    const heroLayer = layerInSlot[0];               // swap clicked layer <-> current hero
+    layerInSlot[0] = i;
+    layerInSlot[s] = heroLayer;
     layout();
     paint();
   }
 
-  select(0);
+  layout();
+  paint();
 </script>
 </body>
 </html>
