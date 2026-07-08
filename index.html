@@ -6,22 +6,33 @@
 <title>Performance in every layer — HOLCIM SYSTEMS</title>
 <style>
   /* ============================================================
-     DESIGN TOKENS — swap these when the real brand values arrive
+     BRAND FONTS — Holcim (supplied)
+     ============================================================ */
+  @font-face{
+    font-family:"Holcim"; font-weight:400; font-style:normal; font-display:swap;
+    src:url("assets/fonts/Holcim-Regular.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Holcim"; font-weight:700; font-style:normal; font-display:swap;
+    src:url("assets/fonts/Holcim-Bold.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Holcim Headline"; font-weight:300; font-style:normal; font-display:swap;
+    src:url("assets/fonts/Holcim-HeadlineLight.woff2") format("woff2");
+  }
+
+  /* ============================================================
+     DESIGN TOKENS — exact brand values
      ============================================================ */
   :root{
-    /* Colours (all estimated from the reference — replace with exact hex) */
-    --bg:            #0a1a3c;   /* deep navy background            */
-    --bg-panel:      #0c1f47;   /* slightly lighter card fill      */
-    --accent:        #29b6e8;   /* cyan headline / stat / logo     */
-    --accent-dim:    #1f8fc0;   /* cyan on hover borders           */
-    --text:          #ffffff;   /* primary white text              */
-    --text-muted:    #d5dce8;   /* body copy                       */
-    --border:        #2a3f6b;   /* thin card / sliver borders      */
-    --border-active: #4d79b8;
+    --bg:            #041739;   /* dark blue  — background          */
+    --accent:        #04bbf1;   /* light blue — headline / stat     */
+    --text:          #f6f6f6;   /* white      — text / logo         */
+    --text-muted:    #f6f6f6;   /* body copy (same white)           */
+    --border:        #1d3a63;   /* thin card / sliver borders       */
 
-    /* Fonts (placeholder stacks — swap the first name for the real face) */
-    --font-display: "Century Gothic", "Questrial", "Futura", "Segoe UI", sans-serif; /* light geometric — the "every layer" face */
-    --font-body:    "Helvetica Neue", Arial, "Segoe UI", sans-serif;                 /* bold humanist — body + headings */
+    --font-display: "Holcim Headline", "Segoe UI", sans-serif;  /* the "every layer" face */
+    --font-body:    "Holcim", "Helvetica Neue", Arial, sans-serif;
   }
 
   *{ box-sizing:border-box; margin:0; padding:0; }
@@ -39,16 +50,17 @@
 
   /* ---------- top bar ---------- */
   .kicker{
-    position:absolute; top:5.5%; left:4.2%;
-    font-weight:700; font-size:clamp(11px,1.1vw,16px);
-    letter-spacing:.18em; text-transform:uppercase;
+    position:absolute; top:5.4%; left:4.2%;
+    font-family:var(--font-body); font-weight:700;   /* PERFORMANCE IN — Holcim Bold 20pt */
+    font-size:clamp(11px,1.28vw,18px);
+    letter-spacing:.16em; text-transform:uppercase;
   }
   .headline{
-    position:absolute; top:6.5%; left:3.6%;
-    font-family:var(--font-display);
+    position:absolute; top:6.2%; left:3.6%;
+    font-family:var(--font-display);                 /* every layer — Holcim Headline Light */
     font-weight:300; color:var(--accent);
-    font-size:clamp(56px,10.5vw,150px);
-    line-height:.95; letter-spacing:-.01em;
+    font-size:clamp(56px,9.7vw,140px);
+    line-height:.95; letter-spacing:0;
   }
   .logo{ position:absolute; top:4.5%; right:4%; width:clamp(120px,15vw,220px); height:auto; }
 
@@ -61,16 +73,16 @@
     display:flex; flex-direction:column;
   }
   .card h2{
-    font-weight:400;
-    font-size:clamp(20px,2.7vw,40px);
+    font-family:var(--font-body); font-weight:400;   /* Holcim Regular 43.5pt */
+    font-size:clamp(20px,2.78vw,40px);
     line-height:1.15; margin-bottom:6%;
     max-width:15em;
   }
   .card-lower{ display:flex; gap:5%; }
   .card-body{ flex:1 1 55%; }
   .card-body p{
-    font-weight:700;
-    font-size:clamp(12px,1.35vw,20px);
+    font-family:var(--font-body); font-weight:400;   /* Holcim Regular 22pt */
+    font-size:clamp(12px,1.4vw,20px);
     line-height:1.5; color:var(--text-muted);
   }
   .card-stat{ flex:1 1 40%; }
@@ -93,10 +105,11 @@
   .fan-inner{ position:relative; width:100%; height:100%; transform-style:preserve-3d; }
 
   .layer{
-    position:absolute; top:10%; height:80%; width:24%;
+    position:absolute; top:0; height:100%;
     border:0; padding:0; cursor:pointer; background:none;
-    transform-origin:center center;             /* pivot & grow around each panel's own y-axis, in place */
-    transition:transform .6s cubic-bezier(.5,.05,.2,1);
+    transform-origin:left center;               /* left edge (x position) is the fixed anchor */
+    transition:transform .6s cubic-bezier(.5,.05,.2,1),
+               width .6s cubic-bezier(.5,.05,.2,1);
   }
   .layer img{
     width:100%; height:100%; object-fit:cover; display:block;
@@ -164,11 +177,7 @@
     { img:"assets/layer-4.svg", name:"Glass envelope",
       head:"Clara pellis. Daylight in, glare and heat kept firmly out",
       body:"Ehendit aut quiae nossimo. High-performance glazing balances daylight autonomy with solar control, cutting cooling demand while keeping the interior bright, connected and comfortable year-round.",
-      stat:"U 0.6", statLabel:"Whole-window thermal value" },
-    { img:"assets/layer-5.svg", name:"Solar / PV",
-      head:"Sol activa. The outer skin turned into a power plant",
-      body:"Odis aut faccus expedit. Building-integrated photovoltaics convert the facade and roof into generation surfaces, offsetting operational energy and shortening the payback of the whole assembly.",
-      stat:"18 kWp", statLabel:"On-site generation capacity" }
+      stat:"U 0.6", statLabel:"Whole-window thermal value" }
   ];
 
   const fan  = document.getElementById('fan');
@@ -186,28 +195,30 @@
   });
 
   /* fan geometry ---------------------------------------------------------
-     Every panel keeps a FIXED x position (its slot) — selecting never moves it
-     sideways. The selected panel simply grows and rotates around its y-axis in
-     the OPPOSITE direction to the unselected (edge-on) panels. */
-  const REST_ROT = -60;   // deg — unselected panels lean this way (edge-on)
-  const SEL_ROT  =  20;   // deg — selected panel rotates the opposite way
-  const SEL_SCALE = 1.16; // selected panel grows
+     Matches the reference comp: the selected image is a WIDE, near-frontal
+     panel; the rest are narrow angled slivers fanning to its right.
+     Every panel's LEFT EDGE (its x position) is FIXED — selecting only changes
+     that panel's WIDTH and rotation, never its horizontal position. */
+  const SLOTS    = [0, 56.5, 69.5, 82.5]; // % — fixed left-edge x of each panel (matches the comp)
+  const SEL_W    = 57;   // % — width of the selected (wide) panel
+  const SLIVER_W = 24;   // % — width of an un-selected panel before its rotation compresses it
+  const SEL_ROT  =  7;   // deg — selected panel: near-frontal, tipped the OPPOSITE way to the slivers
+  const REST_ROT = -58;  // deg — un-selected slivers: angled edge-on
 
   function layout(){
     const panels = fan.querySelectorAll('.layer');
-    const step   = 18;    // % gap between fixed slots (wide enough that a grown panel never hides its neighbour)
-    const x0     = 1;     // % of the first slot
-
     panels.forEach((p,i)=>{
-      p.style.left = (x0 + i * step) + '%';          // FIXED — independent of selection
+      p.style.left = SLOTS[i] + '%';                 // FIXED x — never depends on selection
       if(i === active){
         p.classList.add('is-active');
-        p.style.transform = 'rotateY(' + SEL_ROT + 'deg) scale(' + SEL_SCALE + ')';
-        p.style.zIndex    = 100;                      // grown panel sits in front
+        p.style.width     = SEL_W + '%';
+        p.style.transform = 'rotateY(' + SEL_ROT + 'deg)';
+        p.style.zIndex    = 100;                      // wide panel sits in front
       } else {
         p.classList.remove('is-active');
+        p.style.width     = SLIVER_W + '%';
         p.style.transform = 'rotateY(' + REST_ROT + 'deg)';
-        p.style.zIndex    = 10 + i;                   // keep a stable stacking order
+        p.style.zIndex    = 10 + i;
       }
     });
   }
