@@ -196,58 +196,47 @@
     panels.push(btn);
   });
 
-  /* fan geometry ---------------------------------------------------------
-     There is a fixed row of SLOTS. Slot 0 is the WIDE, near-frontal "hero"
-     on the left; slots 1..n are the narrow angled slivers to its right.
-     Slot positions never move. Clicking a sliver SWAPS its layer with the
-     hero layer, so the clicked image travels into the wide slot and the
-     previous hero drops back into the vacated sliver spot. */
-  const SLOTS    = [0, 56.5, 69.5, 82.5]; // % — fixed left-edge x of each slot (matches the comp)
-  const SEL_W    = 57;   // % — width of the hero (wide) slot
-  const SLIVER_W = 24;   // % — width of a sliver slot before its rotation compresses it
-  const SEL_ROT  =  7;   // deg — hero: near-frontal, tipped the OPPOSITE way to the slivers
-  const REST_ROT = -58;  // deg — slivers: angled edge-on
+  /* fan geometry — horizontal ACCORDION ---------------------------------
+     Images keep a fixed left-to-right order. The selected one unfolds WIDE +
+     near-frontal IN ITS OWN LANE; the others collapse to thin angled slivers
+     (those before it sit on its left, those after it on its right). Panels are
+     packed left→right by their VISUAL footprint so they stay edge-to-edge and
+     always fill the strip. */
+  const N        = LAYERS.length;
+  const SEL_FOOT = 57;                    // % — on-screen footprint of the selected panel
+  const SLV_FOOT = (100 - SEL_FOOT)/(N-1);// % — footprint of each sliver (fills the rest)
+  const SEL_ROT  =  7;                    // deg — selected: near-frontal, tipped OPPOSITE to slivers
+  const REST_ROT = -58;                   // deg — slivers: angled edge-on
+  const cos      = d => Math.cos(d*Math.PI/180);
+  // element width = footprint / cos(angle), so the rotated projection ≈ footprint
+  const SEL_W    = SEL_FOOT / cos(SEL_ROT);
+  const SLV_W    = SLV_FOOT / cos(REST_ROT);
 
-  // layerInSlot[s] = index of the layer currently occupying slot s
-  let layerInSlot = LAYERS.map((_,i)=>i);
-
-  function slotOfLayer(i){ return layerInSlot.indexOf(i); }
+  let active = 0;
 
   function layout(){
-    layerInSlot.forEach((layerIdx, slot)=>{
-      const p = panels[layerIdx];
-      p.style.left = SLOTS[slot] + '%';              // slot position — fixed, never moves
-      if(slot === 0){
-        p.classList.add('is-active');
-        p.style.width     = SEL_W + '%';
-        p.style.transform = 'rotateY(' + SEL_ROT + 'deg)';
-        p.style.zIndex    = 100;                      // hero sits in front
-      } else {
-        p.classList.remove('is-active');
-        p.style.width     = SLIVER_W + '%';
-        p.style.transform = 'rotateY(' + REST_ROT + 'deg)';
-        p.style.zIndex    = 10 + slot;
-      }
+    let x = 0;                                       // running left edge, in %
+    panels.forEach((p,i)=>{
+      const sel = (i === active);
+      p.classList.toggle('is-active', sel);
+      p.style.left      = x + '%';
+      p.style.width     = (sel ? SEL_W : SLV_W) + '%';
+      p.style.transform = 'rotateY(' + (sel ? SEL_ROT : REST_ROT) + 'deg)';
+      // slivers before the selected stack upward to the right; selected on top
+      p.style.zIndex    = sel ? 100 : (i < active ? 10 + i : 40 - i);
+      x += sel ? SEL_FOOT : SLV_FOOT;                // advance by footprint → edge-to-edge
     });
   }
 
   function paint(){
-    const L = LAYERS[layerInSlot[0]];                // hero layer drives the content pane
+    const L = LAYERS[active];
     document.getElementById('c-head').textContent      = L.head;
     document.getElementById('c-body').textContent      = L.body;
     document.getElementById('c-stat').textContent      = L.stat;
     document.getElementById('c-statlabel').textContent = L.statLabel;
   }
 
-  function select(i){
-    const s = slotOfLayer(i);
-    if(s === 0) return;                              // already the hero
-    const heroLayer = layerInSlot[0];               // swap clicked layer <-> current hero
-    layerInSlot[0] = i;
-    layerInSlot[s] = heroLayer;
-    layout();
-    paint();
-  }
+  function select(i){ active = i; layout(); paint(); }
 
   layout();
   paint();
