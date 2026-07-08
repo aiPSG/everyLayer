@@ -62,7 +62,19 @@
     font-size:clamp(56px,9.7vw,140px);
     line-height:.95; letter-spacing:0;
   }
-  .logo{ position:absolute; top:4.5%; right:4%; width:clamp(120px,15vw,220px); height:auto; }
+  /* INTERIM text lockup — swap for the supplied HOLCIM SYSTEMS artwork when the file is available */
+  .logo{
+    position:absolute; top:4.6%; right:4%;
+    text-align:right; font-family:var(--font-body); font-weight:700; line-height:1;
+  }
+  .logo-holcim{
+    display:block; color:var(--text);
+    font-size:clamp(10px,1.06vw,16px); letter-spacing:.34em; margin-right:-.34em;
+  }
+  .logo-systems{
+    display:block; color:var(--accent);
+    font-size:clamp(19px,2.28vw,34px); letter-spacing:.12em; margin-right:-.12em; margin-top:.14em;
+  }
 
   /* ---------- left content card ---------- */
   .card{
@@ -139,7 +151,10 @@
   <main class="stage" aria-label="Performance in every layer">
     <div class="kicker">Performance in</div>
     <h1 class="headline">every layer</h1>
-    <img class="logo" src="assets/logo.svg" alt="HOLCIM SYSTEMS (placeholder logo)">
+    <div class="logo" role="img" aria-label="HOLCIM SYSTEMS">
+      <span class="logo-holcim">HOLCIM</span>
+      <span class="logo-systems">SYSTEMS</span>
+    </div>
 
     <!-- content pane — updates when a layer is selected -->
     <section class="card" aria-live="polite">
