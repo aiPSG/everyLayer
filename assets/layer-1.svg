@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="1000" viewBox="0 0 700 1000">
+  <rect width="700" height="1000" fill="#8ea6bd"/>
+  <g fill="none" stroke="#5f7d99" stroke-width="2" opacity="0.85">
+    <path d="M0 0 L220 140 L120 360 L0 300 Z"/>
+    <path d="M220 140 L470 40 L560 300 L120 360 Z"/>
+    <path d="M470 40 L700 0 L700 260 L560 300 Z"/>
+    <path d="M0 300 L120 360 L60 620 L0 640 Z"/>
+    <path d="M120 360 L560 300 L520 560 L300 620 L60 620 Z"/>
+    <path d="M560 300 L700 260 L700 540 L520 560 Z"/>
+    <path d="M0 640 L60 620 L120 900 L0 1000 Z"/>
+    <path d="M60 620 L300 620 L360 900 L120 900 Z"/>
+    <path d="M300 620 L520 560 L640 820 L360 900 Z"/>
+    <path d="M520 560 L700 540 L700 820 L640 820 Z"/>
+    <path d="M120 900 L360 900 L400 1000 L200 1000 Z"/>
+    <path d="M360 900 L640 820 L700 980 L400 1000 Z"/>
+  </g>
+  <g fill="#7c95ad" opacity="0.5">
+    <path d="M220 140 L470 40 L560 300 L120 360 Z"/>
+    <path d="M120 360 L560 300 L520 560 L300 620 L60 620 Z"/>
+    <path d="M300 620 L520 560 L640 820 L360 900 Z"/>
+  </g>
+  <text x="350" y="520" font-family="Arial, sans-serif" font-size="34" fill="#31465c" text-anchor="middle" opacity="0.6">FACADE / CLADDING</text>
+</svg>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Performance in every layer — HOLCIM SYSTEMS</title>
+<style>
+  /* ============================================================
+     DESIGN TOKENS — swap these when the real brand values arrive
+     ============================================================ */
+  :root{
+    /* Colours (all estimated from the reference — replace with exact hex) */
+    --bg:            #0a1a3c;   /* deep navy background            */
+    --bg-panel:      #0c1f47;   /* slightly lighter card fill      */
+    --accent:        #29b6e8;   /* cyan headline / stat / logo     */
+    --accent-dim:    #1f8fc0;   /* cyan on hover borders           */
+    --text:          #ffffff;   /* primary white text              */
+    --text-muted:    #d5dce8;   /* body copy                       */
+    --border:        #2a3f6b;   /* thin card / sliver borders      */
+    --border-active: #4d79b8;
+
+    /* Fonts (placeholder stacks — swap the first name for the real face) */
+    --font-display: "Century Gothic", "Questrial", "Futura", "Segoe UI", sans-serif; /* light geometric — the "every layer" face */
+    --font-body:    "Helvetica Neue", Arial, "Segoe UI", sans-serif;                 /* bold humanist — body + headings */
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ background:var(--bg); color:var(--text); font-family:var(--font-body); }
+
+  .stage{
+    position:relative;
+    width:100%;
+    max-width:1440px;
+    margin:0 auto;
+    aspect-ratio:1440/1000;
+    min-height:480px;
+    overflow:hidden;
+  }
+
+  /* ---------- top bar ---------- */
+  .kicker{
+    position:absolute; top:5.5%; left:4.2%;
+    font-weight:700; font-size:clamp(11px,1.1vw,16px);
+    letter-spacing:.18em; text-transform:uppercase;
+  }
+  .headline{
+    position:absolute; top:6.5%; left:3.6%;
+    font-family:var(--font-display);
+    font-weight:300; color:var(--accent);
+    font-size:clamp(56px,10.5vw,150px);
+    line-height:.95; letter-spacing:-.01em;
+  }
+  .logo{ position:absolute; top:4.5%; right:4%; width:clamp(120px,15vw,220px); height:auto; }
+
+  /* ---------- left content card ---------- */
+  .card{
+    position:absolute; left:2.2%; top:34%;
+    width:52%; height:63%;
+    border:1px solid var(--border);
+    padding:5% 4.5% 4%;
+    display:flex; flex-direction:column;
+  }
+  .card h2{
+    font-weight:400;
+    font-size:clamp(20px,2.7vw,40px);
+    line-height:1.15; margin-bottom:6%;
+    max-width:15em;
+  }
+  .card-lower{ display:flex; gap:5%; }
+  .card-body{ flex:1 1 55%; }
+  .card-body p{
+    font-weight:700;
+    font-size:clamp(12px,1.35vw,20px);
+    line-height:1.5; color:var(--text-muted);
+  }
+  .card-stat{ flex:1 1 40%; }
+  .stat-num{
+    font-family:var(--font-display); font-weight:300; color:var(--accent);
+    font-size:clamp(26px,3.4vw,52px); line-height:1;
+  }
+  .stat-label{
+    font-weight:700; font-size:clamp(10px,1.05vw,15px);
+    letter-spacing:.03em; line-height:1.25; margin-top:.4em;
+  }
+  .stat-thumb{ width:100%; margin-top:9%; display:block; }
+
+  /* ---------- right layer fan ---------- */
+  .fan{
+    position:absolute; right:0; top:34%;
+    width:45%; height:63%;
+    perspective:1600px;
+  }
+  .fan-inner{ position:relative; width:100%; height:100%; transform-style:preserve-3d; }
+
+  .layer{
+    position:absolute; top:0; height:100%;
+    border:0; padding:0; cursor:pointer; background:none;
+    transform-origin:left center;
+    transition:transform .55s cubic-bezier(.5,.05,.2,1),
+               width .55s cubic-bezier(.5,.05,.2,1),
+               left .55s cubic-bezier(.5,.05,.2,1);
+  }
+  .layer img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    box-shadow:-14px 0 34px rgba(0,0,0,.45);
+    outline:1px solid rgba(255,255,255,.08);
+  }
+  .layer:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+  /* the front panel is already selected — let clicks fall through to slivers */
+  .layer.is-active{ pointer-events:none; }
+
+  /* subtle darkening on the non-active slivers to sell the depth */
+  .layer::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(90deg, rgba(6,16,40,.0) 0%, rgba(6,16,40,.55) 100%);
+    opacity:0; transition:opacity .55s ease; pointer-events:none;
+  }
+  .layer:not(.is-active)::after{ opacity:1; }
+
+  @media (max-width:760px){
+    .card{ width:64%; }
+    .fan{ width:38%; }
+    .card h2{ margin-bottom:3%; }
+    .card-lower{ flex-direction:column; gap:14px; }
+  }
+</style>
+</head>
+<body>
+  <main class="stage" aria-label="Performance in every layer">
+    <div class="kicker">Performance in</div>
+    <h1 class="headline">every layer</h1>
+    <img class="logo" src="assets/logo.svg" alt="HOLCIM SYSTEMS (placeholder logo)">
+
+    <!-- content pane — updates when a layer is selected -->
+    <section class="card" aria-live="polite">
+      <h2 id="c-head"></h2>
+      <div class="card-lower">
+        <div class="card-body"><p id="c-body"></p></div>
+        <div class="card-stat">
+          <div class="stat-num" id="c-stat"></div>
+          <div class="stat-label" id="c-statlabel"></div>
+          <img class="stat-thumb" id="c-thumb" src="assets/stat-thumb.svg" alt="">
+        </div>
+      </div>
+    </section>
+
+    <!-- layer fan / navigation -->
+    <div class="fan">
+      <div class="fan-inner" id="fan"></div>
+    </div>
+  </main>
+
+<script>
+  /* ---- content model: one entry per layer ------------------------------ */
+  const LAYERS = [
+    { img:"assets/layer-1.svg", name:"Facade / cladding",
+      head:"Pudi venda doloresae. Ut alit, conecati temquatur, od utemper enduntem",
+      body:"Pudi venda doloremos etusandit qui voluptas dolupta tendunto comnimusae. Ut alit, conecati temquatur, od utemper enduntem. Vid quid et, volorum aut laboristist ommoloreriae laut lab ipsuntu sapella volor sam, velliquae nosam, totas eum, id magnimus.",
+      stat:"50–90%", statLabel:"Water run-off reduction" },
+    { img:"assets/layer-2.svg", name:"Structural frame",
+      head:"Structura firma. Load paths resolved across the full building envelope",
+      body:"Corem ipsa velit fugitas dolorem quatur reptae. Structural continuity carried through every connection so the frame performs as one system under wind, seismic and service loads across the lifetime of the asset.",
+      stat:"−40%", statLabel:"Embodied carbon vs. baseline" },
+    { img:"assets/layer-3.svg", name:"Green roof",
+      head:"Vivid tectum. A living layer that cools, retains and regenerates",
+      body:"Nam quiatur sapiendi doluptae. The vegetated layer buffers stormwater, insulates against summer heat gain and returns biodiversity to the roofscape while extending membrane life beneath it.",
+      stat:"+30%", statLabel:"Roof membrane lifespan" },
+    { img:"assets/layer-4.svg", name:"Glass envelope",
+      head:"Clara pellis. Daylight in, glare and heat kept firmly out",
+      body:"Ehendit aut quiae nossimo. High-performance glazing balances daylight autonomy with solar control, cutting cooling demand while keeping the interior bright, connected and comfortable year-round.",
+      stat:"U 0.6", statLabel:"Whole-window thermal value" },
+    { img:"assets/layer-5.svg", name:"Solar / PV",
+      head:"Sol activa. The outer skin turned into a power plant",
+      body:"Odis aut faccus expedit. Building-integrated photovoltaics convert the facade and roof into generation surfaces, offsetting operational energy and shortening the payback of the whole assembly.",
+      stat:"18 kWp", statLabel:"On-site generation capacity" }
+  ];
+
+  const fan  = document.getElementById('fan');
+  let active = 0;
+
+  /* build the clickable panels once */
+  LAYERS.forEach((L,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'layer';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Show layer: ' + L.name);
+    btn.innerHTML = '<img src="'+L.img+'" alt="'+L.name+'">';
+    btn.addEventListener('click', ()=> select(i));
+    fan.appendChild(btn);
+  });
+
+  /* fan geometry ---------------------------------------------------------
+     active layer  -> wide, near-flat, on the left
+     other layers  -> narrow slivers, rotated edge-on, stacked to the right */
+  function layout(){
+    const panels     = fan.querySelectorAll('.layer');
+    const activeW    = 50;   // % width of the front panel
+    const sliverW    = 22;   // % width before the edge-on rotation compresses it
+    const sliverStep = 10;   // % x-gap between successive slivers
+    const sliverX0   = 46;   // % where the sliver stack begins (overlaps active edge)
+    let slot = 0;            // ordinal position among the non-active slivers
+
+    panels.forEach((p,i)=>{
+      if(i === active){
+        p.classList.add('is-active');
+        p.style.left      = '0%';
+        p.style.width     = activeW + '%';
+        p.style.transform = 'rotateY(-6deg)';
+        p.style.zIndex    = 100;            // front panel always on top (pointer-events off)
+      } else {
+        p.classList.remove('is-active');
+        p.style.left      = (sliverX0 + slot * sliverStep) + '%';   // fan out to the right
+        p.style.width     = sliverW + '%';
+        p.style.transform = 'rotateY(-58deg)';                      // edge-on recession
+        p.style.zIndex    = 40 + slot;      // each outward sliver sits over the previous
+        slot++;
+      }
+    });
+  }
+
+  function paint(){
+    const L = LAYERS[active];
+    document.getElementById('c-head').textContent      = L.head;
+    document.getElementById('c-body').textContent      = L.body;
+    document.getElementById('c-stat').textContent      = L.stat;
+    document.getElementById('c-statlabel').textContent = L.statLabel;
+  }
+
+  function select(i){
+    active = i;
+    layout();
+    paint();
+  }
+
+  select(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="1000" viewBox="0 0 700 1000">
+  <rect width="700" height="1000" fill="#1c2b3a"/>
+  <g fill="#24405c" stroke="#3f6f9c" stroke-width="2">
+    <rect x="60" y="60" width="260" height="150"/>
+    <rect x="380" y="60" width="260" height="150"/>
+    <rect x="60" y="260" width="260" height="150"/>
+    <rect x="380" y="260" width="260" height="150"/>
+    <rect x="60" y="460" width="260" height="150"/>
+    <rect x="380" y="460" width="260" height="150"/>
+    <rect x="60" y="660" width="260" height="150"/>
+    <rect x="380" y="660" width="260" height="150"/>
+  </g>
+  <g stroke="#4d84b8" stroke-width="1.5" opacity="0.8">
+    <line x1="190" y1="60" x2="190" y2="210"/>
+    <line x1="510" y1="60" x2="510" y2="210"/>
+    <line x1="190" y1="260" x2="190" y2="410"/>
+    <line x1="510" y1="260" x2="510" y2="410"/>
+    <line x1="190" y1="460" x2="190" y2="610"/>
+    <line x1="510" y1="460" x2="510" y2="610"/>
+    <line x1="190" y1="660" x2="190" y2="810"/>
+    <line x1="510" y1="660" x2="510" y2="810"/>
+  </g>
+  <text x="350" y="900" font-family="Arial, sans-serif" font-size="34" fill="#9ec3e2" text-anchor="middle" opacity="0.8">SOLAR / PV</text>
+</svg>
