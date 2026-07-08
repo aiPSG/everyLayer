@@ -50,9 +50,9 @@
 
   /* ---------- top bar ---------- */
   .kicker{
-    position:absolute; top:5.4%; left:4.2%;
+    position:absolute; top:4.55%; left:4.2%;
     font-family:var(--font-body); font-weight:700;   /* PERFORMANCE IN — Holcim Bold 20pt */
-    font-size:clamp(11px,1.28vw,18px);
+    font-size:clamp(11px,1.28vw,18px); line-height:1;
     letter-spacing:.16em; text-transform:uppercase;
   }
   .headline{
@@ -72,7 +72,7 @@
   .card{
     position:absolute; left:2.2%; top:34%;
     width:52%; height:63%;
-    border:1px solid var(--border);
+    border:2px solid var(--border);
     padding:5% 4.5% 4%;
     display:flex; flex-direction:column;
   }
@@ -96,7 +96,8 @@
   }
   .stat-label{
     font-weight:700; font-size:clamp(10px,1.05vw,15px);
-    letter-spacing:.03em; line-height:1.25; margin-top:.4em;
+    letter-spacing:.06em; line-height:1.25; margin-top:.4em;
+    text-transform:uppercase;
   }
   .stat-thumb{ width:100%; margin-top:9%; display:block; }
 
