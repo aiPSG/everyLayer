@@ -93,22 +93,17 @@
   .fan-inner{ position:relative; width:100%; height:100%; transform-style:preserve-3d; }
 
   .layer{
-    position:absolute; top:0; height:100%;
+    position:absolute; top:10%; height:80%; width:24%;
     border:0; padding:0; cursor:pointer; background:none;
-    transform-origin:left center;
-    transition:transform .55s cubic-bezier(.5,.05,.2,1),
-               width .55s cubic-bezier(.5,.05,.2,1),
-               left .55s cubic-bezier(.5,.05,.2,1);
+    transform-origin:center center;             /* pivot & grow around each panel's own y-axis, in place */
+    transition:transform .6s cubic-bezier(.5,.05,.2,1);
   }
   .layer img{
     width:100%; height:100%; object-fit:cover; display:block;
     box-shadow:-14px 0 34px rgba(0,0,0,.45);
     outline:1px solid rgba(255,255,255,.08);
   }
-  .layer:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
-
-  /* the front panel is already selected — let clicks fall through to slivers */
-  .layer.is-active{ pointer-events:none; }
+  .layer:focus-visible img{ outline:2px solid var(--accent); outline-offset:3px; }
 
   /* subtle darkening on the non-active slivers to sell the depth */
   .layer::after{
@@ -191,30 +186,28 @@
   });
 
   /* fan geometry ---------------------------------------------------------
-     active layer  -> wide, near-flat, on the left
-     other layers  -> narrow slivers, rotated edge-on, stacked to the right */
+     Every panel keeps a FIXED x position (its slot) — selecting never moves it
+     sideways. The selected panel simply grows and rotates around its y-axis in
+     the OPPOSITE direction to the unselected (edge-on) panels. */
+  const REST_ROT = -60;   // deg — unselected panels lean this way (edge-on)
+  const SEL_ROT  =  20;   // deg — selected panel rotates the opposite way
+  const SEL_SCALE = 1.16; // selected panel grows
+
   function layout(){
-    const panels     = fan.querySelectorAll('.layer');
-    const activeW    = 50;   // % width of the front panel
-    const sliverW    = 22;   // % width before the edge-on rotation compresses it
-    const sliverStep = 10;   // % x-gap between successive slivers
-    const sliverX0   = 46;   // % where the sliver stack begins (overlaps active edge)
-    let slot = 0;            // ordinal position among the non-active slivers
+    const panels = fan.querySelectorAll('.layer');
+    const step   = 18;    // % gap between fixed slots (wide enough that a grown panel never hides its neighbour)
+    const x0     = 1;     // % of the first slot
 
     panels.forEach((p,i)=>{
+      p.style.left = (x0 + i * step) + '%';          // FIXED — independent of selection
       if(i === active){
         p.classList.add('is-active');
-        p.style.left      = '0%';
-        p.style.width     = activeW + '%';
-        p.style.transform = 'rotateY(-6deg)';
-        p.style.zIndex    = 100;            // front panel always on top (pointer-events off)
+        p.style.transform = 'rotateY(' + SEL_ROT + 'deg) scale(' + SEL_SCALE + ')';
+        p.style.zIndex    = 100;                      // grown panel sits in front
       } else {
         p.classList.remove('is-active');
-        p.style.left      = (sliverX0 + slot * sliverStep) + '%';   // fan out to the right
-        p.style.width     = sliverW + '%';
-        p.style.transform = 'rotateY(-58deg)';                      // edge-on recession
-        p.style.zIndex    = 40 + slot;      // each outward sliver sits over the previous
-        slot++;
+        p.style.transform = 'rotateY(' + REST_ROT + 'deg)';
+        p.style.zIndex    = 10 + i;                   // keep a stable stacking order
       }
     });
   }
