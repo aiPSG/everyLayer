@@ -90,16 +90,20 @@
     line-height:1.5; color:var(--text-muted);
   }
   .card-stat{ flex:1 1 40%; }
+  .stat-pre{
+    font-family:var(--font-body); font-weight:400; color:var(--accent);
+    font-size:clamp(10px,1.05vw,15px); line-height:1; margin-bottom:.3em;
+  }
   .stat-num{
     font-family:var(--font-display); font-weight:300; color:var(--accent);
-    font-size:clamp(26px,3.4vw,52px); line-height:1;
+    font-size:clamp(26px,3.4vw,52px); line-height:1; white-space:nowrap;
   }
+  .stat-num .stat-unit{ font-family:var(--font-body); font-weight:700; font-size:.5em; }
   .stat-label{
     font-weight:700; font-size:clamp(10px,1.05vw,15px);
     letter-spacing:.06em; line-height:1.25; margin-top:.4em;
     text-transform:uppercase;
   }
-  .stat-thumb{ width:100%; margin-top:9%; display:block; }
 
   /* ---------- right layer fan ---------- */
   .fan{
@@ -152,9 +156,9 @@
       <div class="card-lower">
         <div class="card-body"><p id="c-body"></p></div>
         <div class="card-stat">
+          <div class="stat-pre" id="c-pre"></div>
           <div class="stat-num" id="c-stat"></div>
           <div class="stat-label" id="c-statlabel"></div>
-          <img class="stat-thumb" id="c-thumb" src="assets/layer-green.png" alt="">
         </div>
       </div>
     </section>
@@ -171,19 +175,19 @@
     { img:"assets/layer-facade.jpg", name:"Facade / cladding",
       head:"Pudi venda doloresae. Ut alit, conecati temquatur, od utemper enduntem",
       body:"Pudi venda doloremos etusandit qui voluptas dolupta tendunto comnimusae. Ut alit, conecati temquatur, od utemper enduntem. Vid quid et, volorum aut laboristist ommoloreriae laut lab ipsuntu sapella volor sam, velliquae nosam, totas eum, id magnimus.",
-      stat:"50–90%", statLabel:"Water run-off reduction" },
+      pre:"", stat:'50–90 <span class="stat-unit">%</span>', statLabel:"Water run-off reduction" },
     { img:"assets/layer-structural.jpg", name:"Structural frame",
       head:"Structura firma. Load paths resolved across the full building envelope",
       body:"Corem ipsa velit fugitas dolorem quatur reptae. Structural continuity carried through every connection so the frame performs as one system under wind, seismic and service loads across the lifetime of the asset.",
-      stat:"−40%", statLabel:"Embodied carbon vs. baseline" },
+      pre:"from", stat:'25 <span class="stat-unit">L/m²</span>', statLabel:"Water retention" },
     { img:"assets/layer-green.png", name:"Green roof",
       head:"Vivid tectum. A living layer that cools, retains and regenerates",
       body:"Nam quiatur sapiendi doluptae. The vegetated layer buffers stormwater, insulates against summer heat gain and returns biodiversity to the roofscape while extending membrane life beneath it.",
-      stat:"+30%", statLabel:"Roof membrane lifespan" },
+      pre:"", stat:'1°–2°<span class="stat-unit">C</span>', statLabel:"Temp reduction near roof level" },
     { img:"assets/layer-glass.jpg", name:"Glass envelope",
       head:"Clara pellis. Daylight in, glare and heat kept firmly out",
       body:"Ehendit aut quiae nossimo. High-performance glazing balances daylight autonomy with solar control, cutting cooling demand while keeping the interior bright, connected and comfortable year-round.",
-      stat:"U 0.6", statLabel:"Whole-window thermal value" }
+      pre:"up to", stat:'8 <span class="stat-unit">dB</span>', statLabel:"Improved sound insulation" }
   ];
 
   const fan   = document.getElementById('fan');
@@ -237,7 +241,10 @@
     const L = LAYERS[active];
     document.getElementById('c-head').textContent      = L.head;
     document.getElementById('c-body').textContent      = L.body;
-    document.getElementById('c-stat').textContent      = L.stat;
+    const pre = document.getElementById('c-pre');
+    pre.textContent = L.pre || '';
+    pre.style.display = L.pre ? 'block' : 'none';
+    document.getElementById('c-stat').innerHTML        = L.stat;   // stat contains a small <span> unit
     document.getElementById('c-statlabel').textContent = L.statLabel;
   }
 
