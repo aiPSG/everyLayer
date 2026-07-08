@@ -62,18 +62,11 @@
     font-size:clamp(56px,9.7vw,140px);
     line-height:.95; letter-spacing:0;
   }
-  /* HOLCIM SYSTEMS lockup — HOLCIM in Holcim Bold, SYSTEMS as vector glyphs.
-     (Vector recreation of the supplied artwork; swap for the exact file if provided.) */
+  /* HOLCIM SYSTEMS lockup — supplied artwork */
   .logo{
-    position:absolute; top:4.6%; right:4%;
-    width:clamp(150px,17.4vw,248px);
-    text-align:right; line-height:1;
+    position:absolute; top:4.7%; right:4%;
+    width:clamp(150px,16.6vw,240px); height:auto; display:block;
   }
-  .logo-holcim{
-    display:block; font-family:var(--font-body); font-weight:700; color:var(--text);
-    font-size:clamp(9px,1.0vw,15px); letter-spacing:.62em; margin-right:-.62em; margin-bottom:.34em;
-  }
-  .logo-systems{ display:block; width:100%; height:auto; color:var(--accent); }
 
   /* ---------- left content card ---------- */
   .card{
@@ -150,33 +143,7 @@
   <main class="stage" aria-label="Performance in every layer">
     <div class="kicker">Performance in</div>
     <h1 class="headline">every layer</h1>
-    <div class="logo" role="img" aria-label="HOLCIM SYSTEMS">
-      <span class="logo-holcim">HOLCIM</span>
-      <svg class="logo-systems" viewBox="0 0 640 120" fill="currentColor" aria-hidden="true">
-        <!-- S -->
-        <path transform="translate(0,0)"   d="M70 34 C70 18 55 12 42 12 C26 12 14 20 14 34 C14 47 27 52 42 56 C57 60 70 66 70 82 C70 98 55 106 40 106 C26 106 14 99 14 84" fill="none" stroke="currentColor" stroke-width="26"/>
-        <!-- Y -->
-        <g transform="translate(90,0)">
-          <path d="M0 0 L26 0 L52 48 L30 48 Z"/>
-          <path d="M64 0 L90 0 L60 48 L38 48 Z"/>
-          <path d="M32 40 L58 40 L58 120 L32 120 Z"/>
-        </g>
-        <!-- S -->
-        <path transform="translate(186,0)" d="M70 34 C70 18 55 12 42 12 C26 12 14 20 14 34 C14 47 27 52 42 56 C57 60 70 66 70 82 C70 98 55 106 40 106 C26 106 14 99 14 84" fill="none" stroke="currentColor" stroke-width="26"/>
-        <!-- T -->
-        <path transform="translate(276,0)" d="M24 0 L84 0 L84 26 L55 26 L55 120 L29 120 L29 26 L0 26 Z"/>
-        <!-- E (three bars, slanted right ends) -->
-        <g transform="translate(366,0)">
-          <path d="M0 0 L74 0 L64 24 L0 24 Z"/>
-          <path d="M0 48 L64 48 L54 72 L0 72 Z"/>
-          <path d="M0 96 L74 96 L64 120 L0 120 Z"/>
-        </g>
-        <!-- M -->
-        <path transform="translate(446,0)" d="M0 120 L0 0 L28 0 L52 56 L76 0 L104 0 L104 120 L78 120 L78 46 L58 92 L46 92 L26 46 L26 120 Z"/>
-        <!-- S -->
-        <path transform="translate(556,0)" d="M70 34 C70 18 55 12 42 12 C26 12 14 20 14 34 C14 47 27 52 42 56 C57 60 70 66 70 82 C70 98 55 106 40 106 C26 106 14 99 14 84" fill="none" stroke="currentColor" stroke-width="26"/>
-      </svg>
-    </div>
+    <img class="logo" src="assets/logo.png" alt="HOLCIM SYSTEMS">
 
     <!-- content pane — updates when a layer is selected -->
     <section class="card" aria-live="polite">
